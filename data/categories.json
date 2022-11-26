@@ -1,0 +1,17 @@
+[
+    {
+        "id": "01",
+        "name": "Sports Bike",
+        "img": "https://www.tbsnews.net/sites/default/files/styles/very_big_1/public/images/2022/09/21/lead_1._suzuki_gsx_2_2.jpg"
+    },
+    {
+        "id": "02",
+        "name": "Scooters",
+        "img": "https://img.freepik.com/free-photo/retro-moto-scooter-street-urban-style_613910-15470.jpg?w=740&t=st=1669494067~exp=1669494667~hmac=5bc78970df6cb8fa4235f9e07e9f761f0e7396740a543ebf96c794c413e99266"
+    },
+    {
+        "id": "03",
+        "name": "Cafe Racer",
+        "img": "https://img.freepik.com/free-photo/brand-new-shiny-black-retro-chopper-is-parked-brick-building_613910-3242.jpg?w=740&t=st=1669494155~exp=1669494755~hmac=c4700eedcc62b7de7f742dbcf59f24e0bfa4eb18f05184945580c2862ab05b92"
+    }
+]
