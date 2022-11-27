@@ -1,14 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const port = process.env.PORT || 5001;
-
+const { MongoClient, ServerApiVersion } = require('mongodb');
+require('dotenv').config();
 const app = express();
 //middleware
 app.use(cors());0
 app.use(express.json());
 
 const categories = require('./data/categories.json');
-
 const products = require('./data/products.json');
 
 app.get('/categories', (req, res) =>{
@@ -29,6 +29,27 @@ app.get('/products/:id', (req, res) =>{
 })
 
 
+
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ambheuq.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+console.log(uri)
+
+async function run(){
+    try{
+        const ProductCollection = client.db('resaleProduct').collection('products')
+        
+        app.get('/products', async(req, res)=>{
+            const query ={};
+            const options = await ProductCollection.find(query).toArray();
+            res.send(options);
+        })
+    }
+    finally {
+
+    }
+}
+run().catch(console.log);
 
 
 
