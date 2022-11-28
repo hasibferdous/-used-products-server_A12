@@ -36,6 +36,26 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 console.log(uri)
 
+function verifyJWT(req, res, next) {
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).send('unauthorized access');
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+        if (err) {
+            return res.status(403).send({ message: 'forbidden access' })
+        }
+        req.decoded = decoded;
+        next();
+    })
+
+}
+
+
 async function run(){
     try{
         const ProductCollection = client.db('resaleProduct').collection('products')
@@ -67,12 +87,22 @@ async function run(){
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         });
-        app.get('/bookings', async (req, res) => {
+        app.get('/bookings', verifyJWT, async (req, res) => {
             const email = req.query.email;
+            const decodedEmail = req.decoded.email;
+
+            if (email !== decodedEmail) {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+
             const query = { email: email };
             const bookings = await bookingsCollection.find(query).toArray();
             res.send(bookings);
-        })  
+        })
+ 
+
+
+
         app.post('/sellers', async(req, res) =>{
             const seller = req.body;
             const result = await sellersCollection.insertOne(seller);
@@ -83,6 +113,18 @@ async function run(){
             const result = await usersCollection.insertOne(user);
             res.send(result);
         })
+
+        app.get('/jwt', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            if (user) {
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
+                return res.send({ accessToken: token });
+            }
+            res.status(403).send({ accessToken: '' })
+        });
+
 
 
 
