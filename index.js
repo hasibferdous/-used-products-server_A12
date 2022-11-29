@@ -60,10 +60,13 @@ function verifyJWT(req, res, next) {
 
 async function run(){
     try{
+        
         const ProductCollection = client.db('resaleProduct').collection('products')
         const bookingsCollection = client.db('resaleProduct').collection('bookings')
         const sellersCollection = client.db('resaleProduct').collection('sellers')
         const usersCollection = client.db('resaleProduct').collection('users')
+
+        const addedProductsCollection = client.db('resaleProduct').collection('addedproducts');
 
         app.get('/products', async(req, res)=>{
             const query ={};
@@ -167,6 +170,36 @@ async function run(){
             const user = await usersCollection.findOne(query);
             res.send({ isAdmin: user?.role === 'admin' });
         });
+
+
+
+
+
+        app.get('/addedproducts', async (req, res) => {
+            const query = {};
+            const addedproducts = await addedProductsCollection.find(query).toArray();
+            res.send(addedproducts);
+        })
+
+        app.post('/addedproducts', async (req, res) => {
+            const addedproduct = req.body;
+            const result = await addedProductsCollection.insertOne(addedproduct);
+            res.send(result);
+        });
+
+
+
+        app.delete('/addedproducts/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await addedProductsCollection.deleteOne(filter);
+            res.send(result);
+        })
+
+
+
+
+
 
 
 
