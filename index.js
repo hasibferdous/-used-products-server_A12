@@ -189,7 +189,7 @@ async function run(){
 
 
 
-        app.delete('/addedproducts/:id', verifyJWT, verifyAdmin, async (req, res) => {
+        app.delete('/addedproducts/:id', verifyAdmin, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const result = await addedProductsCollection.deleteOne(filter);
