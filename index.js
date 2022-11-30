@@ -34,7 +34,7 @@ app.get('/products/:id', (req, res) =>{
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ambheuq.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-console.log(uri)
+
 
 function verifyJWT(req, res, next) {
 
@@ -221,6 +221,19 @@ async function run(){
             res.send(result);
         })
 
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(filter);
+            res.send(result);
+        });
+        app.delete('/sellers/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await sellersCollection.deleteOne(filter);
+            res.send(result);
+        });
+
         app.post('/create-payment-intent', async (req, res) => {
             const booking = req.body;
             const price = booking.price;
@@ -252,59 +265,12 @@ async function run(){
             const updatedResult = await bookingsCollection.updateOne(filter, updatedDoc)
             res.send(result);
         })
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-    
-    finally {
+   }
+finally {
 
     }
 }
 run().catch(console.log);
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.get('/', async(req, res)=>{
     res.send('doctors portal server is running');
